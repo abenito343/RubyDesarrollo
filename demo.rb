@@ -2,7 +2,7 @@
 
 require 'selenium-webdriver'
 
-driver = Selenium::WebDriver.for:chrome
+driver = Selenium::WebDriver.for :chrome
 
 sleep 1
 

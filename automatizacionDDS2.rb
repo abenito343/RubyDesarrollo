@@ -14,68 +14,120 @@ def rellenarCampo(driver, id, *keys)
 end
 
 
-def verificar_pantalla(driver,expected_title)
-  actual_title = driver.current_url
-  if actual_title == expected_title
-    puts "Estás en la pantalla '#{expected_title}'. Verificación exitosa."
-  else
-    puts "Error: No estás en la pantalla esperada. Título actual: '#{actual_title}'."
-    driver.quit
-  end
-end
 
-
-class LoginPage
+class VerificadorPantalla
   def initialize(driver)
     @driver = driver
   end
 
-  def visit
-    @driver.get('http://localhost:8080/login')
+  def verificar_pantalla(expected_url)
+    actual_url = @driver.current_url
+    if actual_url == expected_url
+      puts "Estás en la pantalla '#{expected_url}'. Verificación exitosa."
+    else
+      puts "Error: No estás en la pantalla esperada. URL actual: '#{actual_url}'."
+      @driver.quit
+    end
+  end
+end
+
+class Pantalla
+  attr_reader :url
+
+  def initialize(driver)
+    @driver = driver
+    @url = nil
   end
 
-  def login(username, password)
-    rellenarCampo(@driver,'username', 'lucaslopez@gmail.com')
-    rellenarCampo(@driver,'password', 'Lucaslopez123@@@')
-    mandarTeclas(@driver,:enter)
+  def visit
+    @driver.get(@url)
   end
 end
 
 
+class LoginPage < Pantalla
+  def initialize(driver)
+    super(driver) # Llama al constructor de la clase padre
+    @url = 'http://localhost:8080/login' # Establece la URL de la página de inicio de sesión
+  end
 
+  def login(username, password)
+    rellenarCampo(@driver, 'username', username)
+    sleep 1
+    rellenarCampo(@driver, 'password', password)
+    sleep 1
+    mandarTeclas(@driver, :enter)
+    sleep 1
+  end
+end
+class RegisterPage < Pantalla
+  def initialize(driver)
+    super(driver) # Llama al constructor de la clase padre
+    @url = 'http://localhost:8080/register' # Establece la URL de la página de registro
+  end
+
+  def register_user(first_name, last_name, email, phone, password)
+    rellenarCampo(@driver, 'firstName', first_name)
+    sleep 1
+    rellenarCampo(@driver, 'lastName', last_name)
+    sleep 1
+    rellenarCampo(@driver, 'email', email)
+    sleep 1
+    rellenarCampo(@driver, 'numero', phone)
+    sleep 1
+    rellenarCampo(@driver, 'password', password)
+    sleep 1
+    #mandarTeclas(@driver, :enter)
+  end
+end
+
+class AddIncidentPage < Pantalla
+  def initialize(driver)
+    super(driver) # Llama al constructor de la clase padre
+    @url = 'http://localhost:8080/communities/1/incidente/save' # Establece la URL de la página para agregar incidentes
+  end
+
+  def addIncident(observation, service, tipo_incidente)
+    rellenarCampo(@driver, 'observation', observation)
+    sleep 1
+    rellenarCampo(@driver, 'Service', service)
+    sleep 1
+    rellenarCampo(@driver, 'tipo_incidente', tipo_incidente)
+    sleep 1
+  end
+end
 
 
 driver = Selenium::WebDriver.for :chrome
-sleep 1
 
-### Ir a tal URL
-driver.get "http://localhost:8080/login"
+login_page = LoginPage.new(driver)
+register_page = RegisterPage.new(driver)
+add_incident_page = AddIncidentPage.new(driver)
+verificador = VerificadorPantalla.new(driver)
+
+sleep 1
+### Ir a tal(login) URL
+driver.get login_page.url
 sleep 1
 #maximizar
 driver.manage.window.maximize
 sleep 1
 
-### Entrar en register
+### Entrar en register usando boton en pantalla
 mandarTeclas(driver, :tab, :tab, :tab, :tab, :tab, :tab, :enter)
 sleep 1
 
-### Completar datos de Register
-rellenarCampo(driver,'firstName','Lucas' )
-sleep 1
-rellenarCampo(driver,'lastName','Lopez' )
-sleep 1
-rellenarCampo(driver,'email','lucaslopez@gmail.com')
-sleep 1
-rellenarCampo(driver,'numero','1515151515')
-sleep 1
-rellenarCampo(driver,'password','Lucaslopez123@@@')
-sleep 1
+##Verificar Pantalla
+verificador.verificar_pantalla(register_page.url)
 
-### Entrar en login
+### Completar datos de Register
+register_page.register_user('Lucas', 'Lopez', 'lucaslopez@gmail.com', '1515151515', 'Lucaslopez123@@@')
+
+### Entrar en login usando boton en pantalla
 mandarTeclas(driver,:tab, :tab, :enter)
 sleep 2
 
-### Entrar en Index
+### Entrar en Index usando boton en pantalla
 mandarTeclas(driver,:tab, :enter)
 sleep 3
 
@@ -83,43 +135,35 @@ sleep 3
 mandarTeclas(driver,:tab, :tab, :tab, :enter)
 sleep 1
 
-login_page = LoginPage.new(driver)
-login_page.visit
-login_page.login('lucaslopez@gmail.com', 'Lucaslopez123@@@')
-
+##Verificar Pantalla
+verificador.verificar_pantalla(login_page.url)
 
 ###Loguearse
-# Encuentra el primer campo de texto por su identificador, nombre, XPath, u otro selector
-rellenarCampo(driver,'username','lucaslopez@gmail.com')
-sleep 1
-rellenarCampo(driver,'password','Lucaslopez123@@@')
-mandarTeclas(driver,:enter)
+login_page.login('lucaslopez@gmail.com', 'Lucaslopez123@@@')
 sleep 2
 
-### Entrar en users
+### Entrar en users usando boton en pantalla
 mandarTeclas(driver,:tab, :tab, :enter)
 sleep 1
 
-### Entrar en Profile
+### Entrar en Profile usando boton en pantalla
 mandarTeclas(driver,:tab, :tab, :tab, :enter)
 
-### Entrar en communities
+### Entrar en communities usando boton en pantalla
 mandarTeclas(driver,:tab, :tab, :enter)
 sleep 1
 
-### Entrar en ADD Incident
+### Entrar en ADD Incident usando boton en pantalla
 mandarTeclas(driver, :tab, :tab, :tab, :tab, :tab, :enter)
 sleep 1
 
-### Completar datos de Register
-rellenarCampo(driver,'observation','se rompio el baño upsi')
-sleep 1
-rellenarCampo(driver,'Service','1')
-sleep 1
-rellenarCampo(driver,'tipo_incidente','1')
-sleep 1
+##Verificar Pantalla
+verificador.verificar_pantalla(add_incident_page.url)
 
-### Entrar en Lista de incidentes
+### Completar datos de ADD Incident
+add_incident_page.addIncident('se rompió el baño upsi', '1', '1')
+
+### Entrar en Lista de incidentes usando boton en pantalla
 mandarTeclas(driver,:tab, :tab, :enter)
 sleep 1
 

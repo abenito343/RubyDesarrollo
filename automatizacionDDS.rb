@@ -12,7 +12,15 @@ def rellenarCampo(driver, id, *keys)
   campo = driver.find_element(:id, id)
   keys.each { |key| campo.send_keys(key) }
 end
-
+def verificar_pantalla(driver,expected_title)
+  actual_title = driver.current_url
+  if actual_title == expected_title
+    puts "Estás en la pantalla '#{expected_title}'. Verificación exitosa."
+  else
+    puts "Error: No estás en la pantalla esperada. Título actual: '#{actual_title}'."
+    driver.quit
+  end
+end
 driver = Selenium::WebDriver.for :chrome
 sleep 1
 
