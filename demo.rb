@@ -27,7 +27,6 @@ driver.navigate.refresh
 sleep 1
 
 driver.manage.window.maximize
-
 sleep 1
 
 #poner en consola el titulo de la pagina actual

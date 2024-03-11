@@ -13,6 +13,38 @@ def rellenarCampo(driver, id, *keys)
   keys.each { |key| campo.send_keys(key) }
 end
 
+
+def verificar_pantalla(driver,expected_title)
+  actual_title = driver.current_url
+  if actual_title == expected_title
+    puts "Estás en la pantalla '#{expected_title}'. Verificación exitosa."
+  else
+    puts "Error: No estás en la pantalla esperada. Título actual: '#{actual_title}'."
+    driver.quit
+  end
+end
+
+
+class LoginPage
+  def initialize(driver)
+    @driver = driver
+  end
+
+  def visit
+    @driver.get('http://localhost:8080/login')
+  end
+
+  def login(username, password)
+    rellenarCampo(@driver,'username', 'lucaslopez@gmail.com')
+    rellenarCampo(@driver,'password', 'Lucaslopez123@@@')
+    mandarTeclas(@driver,:enter)
+  end
+end
+
+
+
+
+
 driver = Selenium::WebDriver.for :chrome
 sleep 1
 
@@ -50,6 +82,11 @@ sleep 3
 ### Entrar en Login
 mandarTeclas(driver,:tab, :tab, :tab, :enter)
 sleep 1
+
+login_page = LoginPage.new(driver)
+login_page.visit
+login_page.login('lucaslopez@gmail.com', 'Lucaslopez123@@@')
+
 
 ###Loguearse
 # Encuentra el primer campo de texto por su identificador, nombre, XPath, u otro selector
