@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-#JIRA
 require 'selenium-webdriver'
 
 #driver.action.send_keys(:tab,:tab,:enter).perform
@@ -99,13 +98,8 @@ add_incident_page = AddIncidentPage.new(driver)
 verificador = VerificadorPantalla.new(driver)
 
 # Lee los valores desde el archivo
-#file_path = 'parametros.txt'
-#mail, psw = File.read(file_path).split("\n")
-
-# Lee los valores desde el archivo
 file_path = 'parametros.txt'
 lines = File.readlines(file_path).map(&:strip)
-
 # Asigna los valores a las variables correspondientes
 login_email, login_password, first_name, last_name, email, phone, register_password, incident_observation, service, tipo_incidente = lines
 
@@ -125,16 +119,16 @@ sleep 1
 verificador.verificar_pantalla(register_page.url)
 
 ### Completar datos de Register
-#register_page.register_user('Lucas', 'Lopez', 'lucaslopez@gmail.com', '1515151515', 'Lucaslopez123@@@')
 register_page.register_user(first_name, last_name, email, phone, register_password)
+sleep 1
 
 ### Entrar en login (usando boton en pantalla)
 mandarTeclas(driver,:tab, :tab, :enter)
-sleep 2
+sleep 1
 
 ### Entrar en Index (usando boton en pantalla)
 mandarTeclas(driver,:tab, :enter)
-sleep 3
+sleep 1
 
 ### Entrar en Login
 mandarTeclas(driver,:tab, :tab, :tab, :enter)
@@ -144,11 +138,8 @@ sleep 1
 verificador.verificar_pantalla(login_page.url)
 
 ### Loguearse
-#login_page.login('lucaslopez@gmail.com', 'Lucaslopez123@@@')
-#login_page.login(mail, psw)
-
 login_page.login(login_email, login_password)
-sleep 2
+sleep 1
 
 ### Entrar en users (usando boton en pantalla)
 mandarTeclas(driver,:tab, :tab, :enter)
@@ -169,8 +160,8 @@ sleep 1
 verificador.verificar_pantalla(add_incident_page.url)
 
 ### Completar datos de ADD Incident
-#add_incident_page.addIncident('se rompió el baño upsi', '1', '1')
 add_incident_page.addIncident(incident_observation, service, tipo_incidente)
+sleep 1
 
 ### Entrar en Lista de incidentes (usando boton en pantalla)
 mandarTeclas(driver,:tab, :tab, :enter)
