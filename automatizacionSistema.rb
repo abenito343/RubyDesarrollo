@@ -98,6 +98,10 @@ register_page = RegisterPage.new(driver)
 add_incident_page = AddIncidentPage.new(driver)
 verificador = VerificadorPantalla.new(driver)
 
+# Lee los valores desde el archivo
+file_path = 'parametros.txt'
+mail, psw = File.read(file_path).split("\n")
+
 sleep 1
 ### Ir a tal URL (login)
 driver.get login_page.url
@@ -132,7 +136,8 @@ sleep 1
 verificador.verificar_pantalla(login_page.url)
 
 ### Loguearse
-login_page.login('lucaslopez@gmail.com', 'Lucaslopez123@@@')
+#login_page.login('lucaslopez@gmail.com', 'Lucaslopez123@@@')
+login_page.login(mail, psw)
 sleep 2
 
 ### Entrar en users (usando boton en pantalla)

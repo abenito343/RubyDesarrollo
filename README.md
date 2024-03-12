@@ -1,1 +1,2 @@
-Repo para estudiar y aprender ruby y automatizacion con selenium
+Branch de automatizacion con selenium del sistema de DDS
+parametros.txt tiene el mail y la psw
