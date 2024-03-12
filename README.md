@@ -1,6 +1,6 @@
 Branch de automatizacion con selenium del sistema de DDS
 .                                   
-Parametros.txt tiene todos los datos en este orden:     
+El archivo parametros.txt tiene todos los datos en este orden:     
 login_email:   
 login_password:  
 first_name:  
